@@ -1,0 +1,51 @@
+#%RAML 1.0
+title: "Take-home"
+description: "A cool API built for Glia"
+version: "1.0.0"
+protocols:
+- "HTTP"
+baseUri: "http://localhost/take-home"
+mediaType:
+- "text/plain"
+securitySchemes:
+  Basic auth:
+    type: "base64 user:password"
+securedBy:
+- "Basic auth"
+/words:
+  displayName: "Scramble words"
+  post:
+    displayName: "Scramble a given word"
+    body:
+      type: "string"
+      example:
+        value: palabra
+    responses:
+      200:
+        body:
+          type: "string"
+          example:
+            value: aarbpal
+            strict: false
+/audit:
+  displayName: "Audit trail"
+  get:
+    displayName: "Get last 10 API calls"
+    responses:
+      200:
+        body:
+          type: "object"
+          example:
+            value: "{\
+            \n\"API\": \"words\",\
+            \n\"payload\": \"palabras\",\
+          \n}"
+            strict: false
+      403:
+        body:
+          type: "error"
+          example:
+            value: "{\
+            \n\"error\": true,\
+            \n\"message\": \"Not Authorized\",\
+          \n}"
