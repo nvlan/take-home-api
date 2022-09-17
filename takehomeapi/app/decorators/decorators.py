@@ -1,7 +1,8 @@
 from flask import request
 from werkzeug.exceptions import BadRequest, Unauthorized
 from werkzeug.wrappers import Response
-from .helpers import validate_auth
+from .helpers import validate_auth, sanitize
+from takehomeapi.app.services.db import db
 import json
 
 def authorize(function):
@@ -24,7 +25,7 @@ def authorize(function):
                     status=400)
                 raise BadRequest('Error processing request', response=resp)
             auth_token = auth.split()[1]
-            success, payload = validate_auth(auth_token)
+            success = validate_auth(auth_token)
             if not success:
                 resp = Response(
                 response=json.dumps({
@@ -36,3 +37,18 @@ def authorize(function):
         return function()
     wrapper_authorize.__name__ = function.__name__
     return wrapper_authorize
+
+def audit(function):
+    def wrapper_audit():
+        endpoint = request.path
+        payload = request.data
+        if not sanitize(payload):
+            raise BadRequest('Invalid input - only letters are allowed!')
+        else:
+            query="INSERT INTO audit (endpoint, payload) values (%s, %s)"
+            values=(endpoint,payload)
+            db.get_cursor().execute(query,values)
+            db.connection.commit()
+        return function()
+    wrapper_audit.__name__ = function.__name__
+    return wrapper_audit

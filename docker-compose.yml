@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  api:
+    build: .
+    container_name: takehomeapi
+    image: takehomeapi
+    volumes:
+      - ./:/opt/code
+    user: ${MY_USER:-root}
+    ports:
+      - "8080:8080"
+    environment:
+      FLASK_CONFIG: Test
+    depends_on:
+      - mariadb
+    links:
+      - mariadb
+
+  mariadb:
+    container_name: mariadb
+    restart: always
+    image: mariadb
+    volumes:
+      - ./takehomeapi.sql:/docker-entrypoint-initdb.d/takehomeapi.sql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mypass
+      MYSQL_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_DATABASE: takehomeapi

@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  mariadb:
+    container_name: mariadb
+    restart: always
+    image: mariadb
+    volumes:
+      - ./takehomeapi.sql:/docker-entrypoint-initdb.d/takehomeapi.sql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: mypass
+      MYSQL_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_DATABASE: takehomeapi

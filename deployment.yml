@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: takehomeapi
+  labels:
+    app: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: takehomeapi
+        image: takehomeapi:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+      hostAliases:
+        - ip: "10.0.0.163"
+          hostnames:
+          - "mariadb"
