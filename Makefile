@@ -1,6 +1,7 @@
 export ROOT_DIR=${PWD}
 
 run:
+	-docker stop mariadb && docker rm mariadb
 	docker-compose -f docker-compose.yml up
 build:
 	docker-compose -f docker-compose.yml build
@@ -13,3 +14,4 @@ deploy:
 	sh deploy.sh
 teardown:
 	docker-compose -f docker-compose.yml down
+	sh teardown.sh

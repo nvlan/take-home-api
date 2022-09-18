@@ -9,9 +9,9 @@ def validate_auth(auth):
     else:
         payload = payload_b64_bytes.decode('ascii')
         if payload.split(':')[0] == getattr(settings, 'AUTH_USER') and payload.split(':')[1] == getattr(settings, 'AUTH_PASS'):
-            return True, payload
+            return True
         else:
-            return False, payload
+            return False
 
 def sanitize(payload):
     filter = re.compile(r'^[a-zA-Z]*$')

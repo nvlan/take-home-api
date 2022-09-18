@@ -26,7 +26,14 @@ class WordsTestCase(BaseTestCase):
         assert response.status_code == 400
 
     def test_scramble_word_bad_auth(self):
-        auth = "wrong:verywrong"
+        auth = "I-am-a-broken-auth"
+        self.headers.setdefault('Authorization', 'Basic ' + auth)
+        response = self.client.post('/words',
+                        headers=(self.headers))
+        assert response.status_code == 403
+
+    def test_scramble_word_wrong_auth(self):
+        auth = "Y3VhbHF1aWVyOnBhc3M="
         self.headers.setdefault('Authorization', 'Basic ' + auth)
         response = self.client.post('/words',
                         headers=(self.headers))

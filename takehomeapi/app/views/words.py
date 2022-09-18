@@ -9,6 +9,5 @@ words_blueprint = Blueprint('records', __name__)
 @audit
 def scramble_word():
     data = request.data
-#    return str(len(data)), 200
     response, code = scrambler(data)
     return response, code

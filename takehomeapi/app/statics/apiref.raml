@@ -4,7 +4,6 @@ description: "A cool API built for Glia"
 version: "1.0.0"
 protocols:
 - "HTTP"
-baseUri: "http://localhost/take-home"
 mediaType:
 - "text/plain"
 securitySchemes:
@@ -27,6 +26,22 @@ securedBy:
           example:
             value: aarbpal
             strict: false
+      400:
+        body:
+          application/json:
+            type: "error"
+            example:
+              value: "{\
+              \n\"Error\": \"Invalid input - only letters are allowed!\",\
+            \n}"
+      403:
+        body:
+          application/json:
+            type: "error"
+            example:
+              value: "{\
+              \n\"Error\": \"Wrong or incomplete auth in request\",\
+            \n}"
 /audit:
   displayName: "Audit trail"
   get:
@@ -34,18 +49,19 @@ securedBy:
     responses:
       200:
         body:
-          type: "object"
-          example:
-            value: "{\
-            \n\"API\": \"words\",\
-            \n\"payload\": \"palabras\",\
-          \n}"
+          application/json:
+            type: "object"
+            example:
+              value: "{\
+              \n\"API\": \"words\",\
+              \n\"payload\": \"palabras\",\
+            \n}"
             strict: false
       403:
         body:
-          type: "error"
-          example:
-            value: "{\
-            \n\"error\": true,\
-            \n\"message\": \"Not Authorized\",\
-          \n}"
+          application/json:
+            type: "error"
+            example:
+              value: "{\
+              \n\"Error\": \"Wrong or incomplete auth in request\",\
+            \n}"

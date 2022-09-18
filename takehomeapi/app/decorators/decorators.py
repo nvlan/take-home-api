@@ -4,6 +4,9 @@ from werkzeug.wrappers import Response
 from .helpers import validate_auth, sanitize
 from takehomeapi.app.services.db import db
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 def authorize(function):
     def wrapper_authorize():
@@ -20,17 +23,17 @@ def authorize(function):
             if auth.split()[0] != 'Basic' or len(auth.split()) < 2:
                 resp = Response(
                 response=json.dumps({
-                    'Error': 'Wrong or incomplete token in request'}),
+                    'Error': 'Wrong or incomplete auth in request'}),
                     mimetype='application/json',
                     status=400)
                 raise BadRequest('Error processing request', response=resp)
             auth_token = auth.split()[1]
             success = validate_auth(auth_token)
+            logging.error(success)
             if not success:
                 resp = Response(
                 response=json.dumps({
-                    'message': 'Not Authorized',
-                    'error': True}),
+                    'Error': 'Wrong or incomplete auth in request'}),
                     mimetype='application/json',
                     status=403)
                 raise Unauthorized('Error processing request', response=resp)
@@ -43,7 +46,12 @@ def audit(function):
         endpoint = request.path
         payload = request.data
         if not sanitize(payload):
-            raise BadRequest('Invalid input - only letters are allowed!')
+            resp = Response(
+            response=json.dumps({
+                'Error': 'Invalid input - only letters are allowed!'}),
+                mimetype='application/json',
+                status=400)
+            raise BadRequest('Error processing request', response=resp)
         else:
             query="INSERT INTO audit (endpoint, payload) values (%s, %s)"
             values=(endpoint,payload)
